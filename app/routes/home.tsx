@@ -80,7 +80,7 @@ export default function Home() {
 									</div>
 								</div>
 								<div className="arrow">
-									<ArrowUpRight size={18}/>
+									<ArrowUpRight size={18} />
 								</div>
 							</div>
 						</div>
