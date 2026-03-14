@@ -16,7 +16,7 @@ export default function Home() {
 	const navigate = useNavigate();
 	const handleUploadComplete = async (base64Image: string) => {
 		const newId = Date.now().toString();
-		navigate(`/visualizer/${newId}`);
+		navigate(`/visualizer/${newId}`, { state: { initialImage: base64Image } });
 		return true;
 	};
 	return (

@@ -8,7 +8,7 @@ import {
 } from "../lib/constants";
 
 interface UploadProps {
-	onComplete?: (base64Data: string) => void;
+	onComplete?: (base64File: string) => Promise<boolean | void> | boolean | void;
 }
 
 const Upload = ({ onComplete }: UploadProps) => {
