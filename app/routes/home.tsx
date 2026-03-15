@@ -25,16 +25,17 @@ export default function Home() {
 			name,
 			sourceImage: base64Image,
 			renderedImage: undefined,
-			timeStamp: Date.now(),
+			timestamp: Date.now(),
 		};
 		const saved = await createProject({ item: newItem, visibility: "private" });
 		if (!saved) {
 			console.error("Failed to create project");
 			return false;
 		}
-		setProjects((prev) => [newItem, ...prev]);
+		setProjects((prev) => [saved, ...prev]);
 		navigate(`/visualizer/${newId}`, {
 			state: {
+				name: saved.name,
 				initialImage: saved.sourceImage,
 				initialRendered: saved.renderedImage || null,
 			},

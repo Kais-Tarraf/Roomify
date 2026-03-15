@@ -58,7 +58,7 @@ export const createProject = async ({
 	const payload = {
 		...rest,
 		sourceImage: resolvedSource,
-		renderImage: resolvedRender,
+		renderedImage: resolvedRender,
 	};
 	try {
 		//call puter worker to store project in kv
