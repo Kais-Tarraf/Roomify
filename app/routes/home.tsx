@@ -4,6 +4,8 @@ import { ArrowRight, ArrowUpRight, Clock, Layers } from "lucide-react";
 import Button from "components/ui/Button";
 import Upload from "components/Upload";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import { createProject } from "lib/puter.action";
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -14,9 +16,29 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
 	const navigate = useNavigate();
+	const [projects, setProjects] = useState<DesignItem[]>([]);
 	const handleUploadComplete = async (base64Image: string) => {
 		const newId = Date.now().toString();
-		navigate(`/visualizer/${newId}`, { state: { initialImage: base64Image } });
+		const name = `Residence ${newId}`;
+		const newItem = {
+			id: newId,
+			name,
+			sourceImage: base64Image,
+			renderedImage: undefined,
+			timeStamp: Date.now(),
+		};
+		const saved = await createProject({ item: newItem, visibility: "private" });
+		if (!saved) {
+			console.error("Failed to create project");
+			return false;
+		}
+		setProjects((prev) => [newItem, ...prev]);
+		navigate(`/visualizer/${newId}`, {
+			state: {
+				initialImage: saved.sourceImage,
+				initialRendered: saved.renderedImage || null,
+			},
+		});
 		return true;
 	};
 	return (
@@ -68,31 +90,31 @@ export default function Home() {
 						</div>
 					</div>
 					<div className="projects-grid">
-						<div className="project-card group">
-							<div className="preview">
-								<img
-									alt="project"
-									src="https://roomify-mlhuk267-dfwu1i.puter.site/projects/1770803585402/rendered.png"
-								/>
-								<div className="badge">
-									<span>Community</span>
-								</div>
-							</div>
-							<div className="card-body">
-								<div>
-									<h3>Project Manhattan</h3>
-									<div className="meta">
-										<Clock size={12} />
-										<span>{new Date("01.01.2027").toLocaleDateString()}</span>
-										<span>By JS Mastery</span>
+						{projects.map(
+							({ id, name, renderedImage, sourceImage, timestamp }) => (
+								<div className="project-card group" key={id}>
+									<div className="preview">
+										<img alt="project" src={renderedImage || sourceImage} />
+										<div className="badge">
+											<span>Community</span>
+										</div>
+									</div>
+									<div className="card-body">
+										<div>
+											<h3>{name}</h3>
+											<div className="meta">
+												<Clock size={12} />
+												<span>{new Date(timestamp).toLocaleDateString()}</span>
+												<span>By JS Mastery</span>
+											</div>
+										</div>
+										<div className="arrow">
+											<ArrowUpRight size={18} />
+										</div>
 									</div>
 								</div>
-								<div className="arrow">
-									<ArrowUpRight size={18} />
-								</div>
-							</div>
-						</div>
-						<ArrowUpRight size={18} />
+							)
+						)}
 					</div>
 				</div>
 			</section>
